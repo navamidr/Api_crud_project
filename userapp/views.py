@@ -9,13 +9,30 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from userapp.decorators import user_role
+from rest_framework.decorators import action
 
 
 
 class PersonViewSet(ModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+    lookup_field = 'user_id' 
+
+
+    @action(detail=True, methods=['get'],url_path='details')
+    @user_role
+
+    def user_details(self,request,user_id=None):
+        try:
+            user = self.get_object()
+            return Response({
+                "user_id":user.user_id,
+                "name":user.name,
+                "role":user.role,
+            })
+        except Person.DoesNotExist:
+            return Response({"error":"user not found"},status=404)
 
 
 

@@ -17,6 +17,7 @@ urlpatterns = [
     path('token/',TokenObtainPairView.as_view(),name='token_obtain_pair'),
     path('token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     path('protecteduser/',Protecteduser.as_view(),name='protecteduser'),
+    
 
     
     path('', include(router.urls)),
