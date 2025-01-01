@@ -11,7 +11,35 @@ from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from userapp.decorators import user_role
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListAPIView,GenericAPIView
 
+
+
+
+# patch request using generic api view 
+
+class RequetPatch(GenericAPIView):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+
+    def patch(self,request,id):
+        data = request.data
+        obj = Person.objects.get(id=id)
+        serializer = PersonSerializer(obj,data=data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+
+
+# pagination 
+class Pagenumber(PageNumberPagination):
+    page_size= 2
+
+class Pagination(ListAPIView):
+    queryset=Person.objects.all()
+    serializer_class = PersonSerializer
+    pagination_class = Pagenumber
 
 
 class PersonViewSet(ModelViewSet):
@@ -36,7 +64,7 @@ class PersonViewSet(ModelViewSet):
 
 
 
-# jwt
+# jwt based authentication
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -55,7 +83,7 @@ class Protecteduser(APIView):
     def get(self,request):
         return Response({'message':'you are authenticated!'})
 
-# token based
+# token based authentication
 
 class Register(APIView):
     def post(self,request):
@@ -83,7 +111,7 @@ class Login(APIView):
 
         
 
-#crud operation
+#crud operation using APIView
 
 class Userlist(APIView):
     def get(self,request):

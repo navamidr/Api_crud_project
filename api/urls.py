@@ -1,5 +1,6 @@
 from django.urls import path,include
-from userapp.views import user,Userlist,Userdata,Register,Login,RegisterView,Protecteduser,PersonViewSet
+from userapp.views import user,Userlist,Userdata,Register,Login,RegisterView,Protecteduser,PersonViewSet,Pagination
+from userapp.views import RequetPatch
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
@@ -17,8 +18,9 @@ urlpatterns = [
     path('token/',TokenObtainPairView.as_view(),name='token_obtain_pair'),
     path('token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     path('protecteduser/',Protecteduser.as_view(),name='protecteduser'),
+    path('pagination/',Pagination.as_view(),name='pagination'),
     
-
+    path('requestpatch/<int:id>/',RequetPatch.as_view(),name='requestpatch'),
     
     path('', include(router.urls)),
     
